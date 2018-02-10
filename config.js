@@ -171,7 +171,8 @@ var config = {
 					ctaApiKey: 'fnuXHgKBkVcQmbAYXT9bWvCWF', //My api key: 'fnuXHgKBkVcQmbAYXT9bWvCWF',
 					busUrl: 'http://www.ctabustracker.com/bustime/api/v2/getpredictions',
 					updateTime: 60000
-			},
+			}
+		},
 		{
 		module: "MMM-MyScoreboard",
   		position: "top_right",
@@ -187,7 +188,8 @@ var config = {
         			league: "NCAAM",
         			groups: ["Big Ten"]
       				}]
-			}}
+			}
+		}
 	]
 };
 
