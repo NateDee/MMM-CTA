@@ -32,15 +32,15 @@ module.exports = NodeHelper.create({
 		var self = this;
 		// console.log("Getting data from CTA"); // for debugging
 		var myUrl = payload.url + "?key=" + payload.key + "&stpid=" + payload.stpid + "&format=json";
-		console.log(myUrl); // for debugging
+		// console.log(myUrl); // for debugging
 		request({url: myUrl}, function (error, response, body) {
-			// console.log("CTA request fired.");
+			console.log("CTA request fired."); // for debugging
 			// Following line for building, delete when able to get DOM to show
-			// self.sendSocketNotification("MMM-CTA-DATA", "TESTING");
+			self.sendSocketNotification("MMM-CTA-DATA", "TESTING");
 			// Delete above when solved
 			if (!error && response.statusCode == 200) {
 				var bodyJs = JSON.parse(body);
-				console.log(bodyJs); // For testing purposes;
+				// console.log(bodyJs); // For testing purposes;
 				self.sendSocketNotification("MMM-CTA-DATA", bodyJs)
 			}; // else {console.log("error getting data: " + error + "Body: " + body)};
 		});

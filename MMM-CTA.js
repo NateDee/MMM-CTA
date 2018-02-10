@@ -56,18 +56,18 @@ Module.register("MMM-CTA", {
 			updateInterval: self.config.updateTime
 
 		};
-
 		// Log.log("Request: " + JSON.stringify(request));
 		self.sendSocketNotification("CTA-REQUEST", request)  // Socket notification processed in node_helper.js;
 	},
 
-	notificationReceived: function(notification, payload, sender) {
+	// Probably should remove this, because I run an initialization with start module..
+	/* notificationReceived: function(notification, payload, sender) {
 		if (notification === "DOM_OBJECTS_CREATED") {
 			Log.log(this.name + " received a sys notification: " + notification);
 			this.apiRequest(this);
 			console.log("Start CTA dom");
 		}
-	},
+	}, */
 
 	getDom: function() {
 		console.log("Updating CTA dom"); // testing, make sure updateDom is running
@@ -169,6 +169,7 @@ Module.register("MMM-CTA", {
 	socketNotificationReceived: function (notification, payload) {
 		if (notification === "MMM-CTA-DATA") {
 			// send payload (aka bus data to new var = dataNotification)
+			console.log("Payload received"); // debugging			
 			this.dataNotification = payload;
 			this.updateDom();
 			this.scheduleUpdate(this.config.updateTime);
