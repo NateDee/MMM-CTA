@@ -47,6 +47,7 @@ module.exports = NodeHelper.create({
 				bodyJs.bus = JSON.parse(body);
 				// console.log(bodyJs); // For testing purposes;
 			}; // else {console.log("error getting data: " + error + "Body: " + body)};
+		});
 		request({url: myUrlTrain}, function (error, response, body) {
 			console.log("CTA request fired train."); // for debugging
 			// Following line for building, delete when able to get DOM to show
@@ -55,8 +56,8 @@ module.exports = NodeHelper.create({
 			if (!error && response.statusCode == 200) {
 				bodyJs.train = JSON.parse(body);
 				// console.log(bodyJs); // For testing purposes;
-				self.sendSocketNotification("MMM-CTA-DATA", bodyJs)	
-		});
+			self.sendSocketNotification("MMM-CTA-DATA", bodyJs)};	
+			});
 		// console.log(payload.updateInterval); Testing to see update interval
 		// handled by scheduleUpdate function setInterval(function() { self.getData(payload); }, payload.updateInterval);
 	}
