@@ -1,6 +1,6 @@
 Module.register("MMM-CTA", {
 	defaults: { // Start with the information needed for a single stop
-		stopName: null,
+		busStopName: null,
 		stationId: null,
 		stopId: null,
 		maxResult: null,
@@ -9,6 +9,10 @@ Module.register("MMM-CTA", {
 		updateTime: 60000, // 1 minute
 		busUrl: 'www.ctabustracker.com/bustime/api/v2/getpredictions', // deleted http:
 		initialLoadDelay: 0, // start delay seconds.
+		trainUrl: 'http://lapi.transitchicago.com/api/1.0/ttarrivals.aspx',
+		ctaApiKeyTrain: null,
+		trainStationID: null,
+		
 	},
 
 	// requireVersion: 
@@ -28,7 +32,7 @@ Module.register("MMM-CTA", {
 */
 	header: function() {
 		var header = document.createElement("header");
-		header.innerHTML = this.config.stopName;
+		header.innerHTML = this.config.busStopName;
 		return header;
 	},
 
@@ -52,9 +56,11 @@ Module.register("MMM-CTA", {
 			maxRes: self.config.maxResult,
 			rt: self.config.routeCode,
 			key: self.config.ctaApiKey,
-			url: self.config.busUrl,
-			updateInterval: self.config.updateTime
-
+			urlBus: self.config.busUrl,
+			updateInterval: self.config.updateTime,
+			urlTrain: self.config.trainUrl,
+			keyTrain: self.config.ctaApiKeyTrain,
+			idTrain: self.config.trainStationID
 		};
 		// Log.log("Request: " + JSON.stringify(request));
 		self.sendSocketNotification("CTA-REQUEST", request)  // Socket notification processed in node_helper.js;
@@ -97,53 +103,55 @@ Module.register("MMM-CTA", {
 			table.appendChild(iRow);
 			
 			// Stop name header... create loop with bus row following later...
-			var stopRow = document.createElement("tr");
-			var stopRowElement = document.createElement("td");
-			stopRowElement.align ="middle";
-			stopRowElement.colSpan = "3";
-			stopRowElement.className = "medium";
-			stopRowElement.innerHTML = this.config.stopName;
-			stopRow.appendChild(stopRowElement);
-			table.appendChild(stopRow);
+			// Check if bus is not null, if has data, run update:
+			if (this.dataNotification.bus !== null) {
+				var stopRow = document.createElement("tr");
+				var stopRowElement = document.createElement("td");
+				stopRowElement.align ="middle";
+				stopRowElement.colSpan = "3";
+				stopRowElement.className = "medium";
+				stopRowElement.innerHTML = this.config.busStopName;
+				stopRow.appendChild(stopRowElement);
+				table.appendChild(stopRow);
 
-			// Do the bus title row
-			var busRow = document.createElement("tr");
-			busRow.className = "small";
-			busRow.align = "left";
-			var dirElement = document.createElement("td");
-			dirElement.innerHTML = "Direction";// dataNotification["bustime-response"].prd[0].rtdir;
-			busRow.appendChild(dirElement);
-			var rtElement = document.createElement("td");
-			rtElement.align = "left";
-			rtElement.innerHTML = "Route #"; // dataNotification["bustime-response"].prd[0].rt;
-			busRow.appendChild(rtElement);
-			var arrivalElement = document.createElement("td");
-			arrivalElement.align = "right";
-			arrivalElement.innerHTML = "Arrival" // dataNotification["bustime-response"].prd[0].rt;
-			busRow.appendChild(arrivalElement);
-			// Append busRow into table!
-			table.appendChild(busRow);
+				// Do the bus title row
+				var busRow = document.createElement("tr");
+				busRow.className = "small";
+				busRow.align = "left";
+				var dirElement = document.createElement("td");
+				dirElement.innerHTML = "Direction";// dataNotification["bustime-response"].prd[0].rtdir;
+				busRow.appendChild(dirElement);
+				var rtElement = document.createElement("td");
+				rtElement.align = "left";
+				rtElement.innerHTML = "Route #"; // dataNotification["bustime-response"].prd[0].rt;
+				busRow.appendChild(rtElement);
+				var arrivalElement = document.createElement("td");
+				arrivalElement.align = "right";
+				arrivalElement.innerHTML = "Arrival" // dataNotification["bustime-response"].prd[0].rt;
+				busRow.appendChild(arrivalElement);
+				// Append busRow into table!
+				table.appendChild(busRow);
 			
 				// Do the bus content row with a loop
-			for (i = 0, len = this.dataNotification["bustime-response"].prd.length; i < len; i++) {
-				var arriveRow = document.createElement("tr");
-				arriveRow.className = "small";
-				arriveRow.align = "left";
-				var arriveElement = document.createElement("td");
-				arriveElement.innerHTML = this.dataNotification["bustime-response"].prd[i].rtdir;
-				arriveRow.appendChild(arriveElement);
-				var rtArriveElement = document.createElement("td");
-				rtArriveElement.align = "left";
-				rtArriveElement.innerHTML = this.dataNotification["bustime-response"].prd[i].rt + " " + "<i class='fa fa-bus' aria-hidden='true'></i>";
-				arriveRow.appendChild(rtArriveElement);
-				var arrivalArriveElement = document.createElement("td");
-				arrivalArriveElement.align = "right";
-				arrivalArriveElement.innerHTML = this.dataNotification["bustime-response"].prd[i].prdctdn + " min";
-				arriveRow.appendChild(arrivalArriveElement);
-				// Append busArrivalRow into table!
-				table.appendChild(arriveRow);
+				for (i = 0, len = this.dataNotification.bus["bustime-response"].prd.length; i < len; i++) {
+					var arriveRow = document.createElement("tr");
+					arriveRow.className = "small";
+					arriveRow.align = "left";
+					var arriveElement = document.createElement("td");
+					arriveElement.innerHTML = this.dataNotification.bus["bustime-response"].prd[i].rtdir;
+					arriveRow.appendChild(arriveElement);
+					var rtArriveElement = document.createElement("td");
+					rtArriveElement.align = "left";
+					rtArriveElement.innerHTML = this.dataNotification.bus["bustime-response"].prd[i].rt + " " + "<i class='fa fa-bus' aria-hidden='true'></i>";
+					arriveRow.appendChild(rtArriveElement);
+					var arrivalArriveElement = document.createElement("td");
+					arrivalArriveElement.align = "right";
+					arrivalArriveElement.innerHTML = this.dataNotification.bus["bustime-response"].prd[i].prdctdn + " min";
+					arriveRow.appendChild(arrivalArriveElement);
+					// Append busArrivalRow into table!
+					table.appendChild(arriveRow);
+				}
 			}
-
 		}
 		wrapper.appendChild(table);
 		return wrapper;
