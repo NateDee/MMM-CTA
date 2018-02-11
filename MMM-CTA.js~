@@ -1,0 +1,120 @@
+Module.register("MMM-CTA", {
+	defaults: { // Start with the information needed for a single stop
+		stopName: null,
+		stationId: null,
+		stopId: null,
+		maxResult: null,
+		routeCode: null,
+		ctaApiKey: null,
+		updateTime: 1 * 60 * 1000, // 1 minute
+		busUrl: 'http://www.ctabustracker.com/bustime/api/v2/getpredictions'
+	},
+
+	// requireVersion: 
+
+	getStyles: function() {
+		return ["font-awesome.css"];
+	},
+
+	loader: function() {
+		var loader = document.createElement("div");
+		loader.innerHTML = ("LOADING CTA TRACKER");
+		loader.className = "small dimmed";
+		return loader;
+		this.loaded = false;
+		Log.info("Loader run.")
+	},
+
+	header: function() {
+		var header = document.createElement("header");
+		header.innerHTML = this.config.stopName;
+		return header;
+	},
+
+	start: function() {
+		Log.info("Starting module: " + this.name);
+		// Prevent API abuse, bus tracker limits 10,000/day
+		if (this.updateTime < 10 * 1000) {
+			this.updateTime = 15 * 1000 // Every 15 sec (overkill as they don't update API that often)
+		}	
+
+		this.apiRequest(this);  //Create api request function that contains config variables needed
+		setInterval(this.apiRequest, this.updateTime, this);
+	},
+
+	getDom: function() {
+		var self = this;
+		// Create document container
+		wrapper = document.createElement("div");
+		// create table
+		var table = document.createElement("table");
+
+		if (this.dataNotification) {
+			var headRow = document.createElement("tr");
+			var headElement = document.createElement("td");
+			headElement.className = "small";
+			headElement.colSpan = "3";
+			headElement.innerHTML = "Incidents";
+			headRow.appendChild(headElement);
+			table.appendChild(headRow);
+			
+			// Nest this to an if statements with incidents, for now just testing output
+			var iRow = document.createElement("tr");
+			var iElement = document.createElement("td");
+			iElement.align = "left";
+			iElement.colSpan = "3";
+			iElement.className = "xsmall";
+			iElement.innerHTML = "No Incidents Reported";
+			iRow.appendChild(iElement);
+			table.appendChild(iRow);
+			// Do the bus row
+			var busRow = document.createElement("tr");
+			busRow.className = "xsmall";
+			busRow.align = "left";
+			var dirElement = document.createElement("td");
+			dirElement.innerHTML = "TEST",;// dataNotification["bustime-response"].prd[0].rtdir;
+			busRow.appendChild(dirElement);
+			var rtElement = document.createElement("td");
+			rtElement.align = "left";
+			rtElement.innerHTML = "TESTING"; // dataNotification["bustime-response"].prd[0].rt;
+			busRow.appendChild(rtElement);
+			var arrivalElement = document.createElement("td");
+			arrivalElement.align = "right";
+			arrivalElement.innerHTML = "TESTING" // dataNotification["bustime-response"].prd[0].rt;
+			busRow.appendChild(arrivalElement)
+
+		}
+		wrapper.appendChild(table);
+		return wrapper;
+	},
+
+	apiRequest: function(self) {
+		// Variables needed for API request, see CTA devel documentation
+		var request = {
+			mapid: self.config.stationId,
+			stpid: self.config.stopId,
+			maxRes: self.config.maxResult,
+			rt: self.config.routeCode,
+			key: self.config.ctaApiKey,
+			url: self.baseUrl,
+			updateInterval: self.updateTime
+
+		};
+
+		Log.log("Request: " + JSON.stringify(request));
+		self.sendSocketNotification("CTA-REQUEST", request)  // Socket notification processed in node_helper.js
+	},
+
+	socketNotificationReceived: function (notification, payload) {
+		if (notification === "STARTED") {
+			this.updateDom();		
+		} else if (notification === "MMM-CTA-DATA") {
+			// send payload (aka bus data to new var = dataNotification)
+			this.dataNotification = payload;
+			this.loaded = true;
+			this.updateDom();
+		}
+	},
+
+
+});

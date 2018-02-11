@@ -80,7 +80,7 @@ Module.register("MMM-CTA", {
 		if (this.dataNotification) {
 			var headRow = document.createElement("tr");
 			var headElement = document.createElement("td");
-			headElement.className = "small";
+			headElement.className = "medium";
 			headElement.colSpan = "3";
 			headElement.innerHTML = "Incidents";
 			headRow.appendChild(headElement);
@@ -89,7 +89,7 @@ Module.register("MMM-CTA", {
 			// Nest this to an if statements with incidents, for now just testing output
 			var iRow = document.createElement("tr");
 			var iElement = document.createElement("td");
-			iElement.align = "left";
+			iElement.align = "small";
 			iElement.colSpan = "3";
 			iElement.className = "xsmall";
 			iElement.innerHTML = "No Incidents Reported";
@@ -101,14 +101,14 @@ Module.register("MMM-CTA", {
 			var stopRowElement = document.createElement("td");
 			stopRowElement.align ="middle";
 			stopRowElement.colSpan = "3";
-			stopRowElement.className = "small";
+			stopRowElement.className = "medium";
 			stopRowElement.innerHTML = this.config.stopName;
 			stopRow.appendChild(stopRowElement);
 			table.appendChild(stopRow);
 
 			// Do the bus title row
 			var busRow = document.createElement("tr");
-			busRow.className = "xsmall";
+			busRow.className = "small";
 			busRow.align = "left";
 			var dirElement = document.createElement("td");
 			dirElement.innerHTML = "Direction";// dataNotification["bustime-response"].prd[0].rtdir;
@@ -127,7 +127,7 @@ Module.register("MMM-CTA", {
 				// Do the bus content row with a loop
 			for (i = 0, len = this.dataNotification["bustime-response"].prd.length; i < len; i++) {
 				var arriveRow = document.createElement("tr");
-				arriveRow.className = "xsmall";
+				arriveRow.className = "small";
 				arriveRow.align = "left";
 				var arriveElement = document.createElement("td");
 				arriveElement.innerHTML = this.dataNotification["bustime-response"].prd[i].rtdir;
