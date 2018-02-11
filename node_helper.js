@@ -30,19 +30,32 @@ module.exports = NodeHelper.create({
 
 	getData: function(payload) {
 		var self = this;
+		var bodyJs = {
+			bus: null,
+			train: null
+			};
 		// console.log("Getting data from CTA"); // for debugging
-		var myUrl = payload.url + "?key=" + payload.key + "&stpid=" + payload.stpid + "&format=json";
+		var myUrlBus = payload.urlBus + "?key=" + payload.key + "&stpid=" + payload.stpid + "&format=json";
+		var myUrlTrain = payload.urlTrain + "?key=" + payload.keyTrain + "&max=5" + "&mapid=" + payload.idTrain + "&outputType=json";
 		// console.log(myUrl); // for debugging
-		request({url: myUrl}, function (error, response, body) {
+		request({url: myUrlBus}, function (error, response, body) {
 			console.log("CTA request fired."); // for debugging
 			// Following line for building, delete when able to get DOM to show
-			self.sendSocketNotification("MMM-CTA-DATA", "TESTING");
+			// self.sendSocketNotification("MMM-CTA-DATA", "TESTING");
 			// Delete above when solved
 			if (!error && response.statusCode == 200) {
-				var bodyJs = JSON.parse(body);
+				bodyJs.bus = JSON.parse(body);
 				// console.log(bodyJs); // For testing purposes;
-				self.sendSocketNotification("MMM-CTA-DATA", bodyJs)
 			}; // else {console.log("error getting data: " + error + "Body: " + body)};
+		request({url: myUrlTrain}, function (error, response, body) {
+			console.log("CTA request fired train."); // for debugging
+			// Following line for building, delete when able to get DOM to show
+			// self.sendSocketNotification("MMM-CTA-DATA", "TESTING");
+			// Delete above when solved
+			if (!error && response.statusCode == 200) {
+				bodyJs.train = JSON.parse(body);
+				// console.log(bodyJs); // For testing purposes;
+				self.sendSocketNotification("MMM-CTA-DATA", bodyJs)	
 		});
 		// console.log(payload.updateInterval); Testing to see update interval
 		// handled by scheduleUpdate function setInterval(function() { self.getData(payload); }, payload.updateInterval);
