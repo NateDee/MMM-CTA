@@ -12,7 +12,7 @@ Module.register("MMM-CTA", {
 		trainUrl: 'http://lapi.transitchicago.com/api/1.0/ttarrivals.aspx',
 		ctaApiKeyTrain: null,
 		trainStationID: null,
-		
+		trainStopName: null,
 	},
 
 	// requireVersion: 
@@ -147,6 +147,54 @@ Module.register("MMM-CTA", {
 					var arrivalArriveElement = document.createElement("td");
 					arrivalArriveElement.align = "right";
 					arrivalArriveElement.innerHTML = this.dataNotification.bus["bustime-response"].prd[i].prdctdn + " min";
+					arriveRow.appendChild(arrivalArriveElement);
+					// Append busArrivalRow into table!
+					table.appendChild(arriveRow);
+				}
+			};
+			if (this.dataNotification.train !== null) {
+				var stopRow = document.createElement("tr");
+				var stopRowElement = document.createElement("td");
+				stopRowElement.align ="middle";
+				stopRowElement.colSpan = "3";
+				stopRowElement.className = "medium";
+				stopRowElement.innerHTML = this.config.trainStopName;
+				stopRow.appendChild(stopRowElement);
+				table.appendChild(stopRow);
+
+				// Do the bus title row
+				var busRow = document.createElement("tr");
+				busRow.className = "small";
+				busRow.align = "left";
+				var dirElement = document.createElement("td");
+				dirElement.innerHTML = "Direction";// dataNotification["ctatt"].prd[0].rtdir;
+				busRow.appendChild(dirElement);
+				var rtElement = document.createElement("td");
+				rtElement.align = "left";
+				rtElement.innerHTML = "Route #"; // dataNotification["ctatt"].prd[0].rt;
+				busRow.appendChild(rtElement);
+				var arrivalElement = document.createElement("td");
+				arrivalElement.align = "right";
+				arrivalElement.innerHTML = "Arrival" // dataNotification["ctatt"].prd[0].rt;
+				busRow.appendChild(arrivalElement);
+				// Append busRow into table!
+				table.appendChild(busRow);
+			
+				// Do the bus content row with a loop
+				for (i = 0, len = this.dataNotification.train["ctatt"].eta.length; i < len; i++) {
+					var arriveRow = document.createElement("tr");
+					arriveRow.className = "small";
+					arriveRow.align = "left";
+					var arriveElement = document.createElement("td");
+					arriveElement.innerHTML = this.dataNotification.train["ctatt"].eta[i].destNm;
+					arriveRow.appendChild(arriveElement);
+					var rtArriveElement = document.createElement("td");
+					rtArriveElement.align = "left";
+					rtArriveElement.innerHTML = "<i class="fa fa-subway" style="color:blue"></i>";
+					arriveRow.appendChild(rtArriveElement);
+					var arrivalArriveElement = document.createElement("td");
+					arrivalArriveElement.align = "right";
+					arrivalArriveElement.innerHTML = duration.asMinutes(moment.duration((this.dataNotification.train["ctatt"].eta[i].arrT).diff((this.dataNotification.train["ctatt"].eta[i].prdt)))) + " min";
 					arriveRow.appendChild(arrivalArriveElement);
 					// Append busArrivalRow into table!
 					table.appendChild(arriveRow);
