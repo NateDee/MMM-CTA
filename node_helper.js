@@ -21,7 +21,7 @@ module.exports = NodeHelper.create({
 				self.config = payload;
 			self.getData(payload)
 			} */
-		if (notification === 'CTA-REQUEST' ) {
+		if (notification === "CTA-REQUEST" ) {
 			// console.log("Running CTA-REQUEST"); // for debugging			
 			self.config = payload;
 			self.getData(payload);
@@ -39,25 +39,25 @@ module.exports = NodeHelper.create({
 		var myUrlTrain = payload.urlTrain + "?key=" + payload.keyTrain + "&max=5" + "&mapid=" + payload.idTrain + "&outputType=json";
 		// console.log(myUrl); // for debugging
 		request({url: myUrlBus}, function (error, response, body) {
-			console.log("CTA request fired."); // for debugging
+			// console.log("CTA request fired."); // for debugging
 			// Following line for building, delete when able to get DOM to show
 			// self.sendSocketNotification("MMM-CTA-DATA", "TESTING");
 			// Delete above when solved
 			if (!error && response.statusCode == 200) {
 				bodyJs.bus = JSON.parse(body);
-				// console.log(bodyJs); // For testing purposes;
+				console.log(bodyJs.bus); // For testing purposes;
+				request({url: myUrlTrain}, function (error, response, body) {
+					console.log("CTA request fired train."); // for debugging
+					// Following line for building, delete when able to get DOM to show
+					// self.sendSocketNotification("MMM-CTA-DATA", "TESTING");
+					// Delete above when solved
+						if (!error && response.statusCode == 200) {
+						bodyJs.train = JSON.parse(body);
+						console.log(bodyJs.train); // For testing purposes;
+						self.sendSocketNotification("MMM-CTA-DATA", bodyJs)};	
+			});
 			}; // else {console.log("error getting data: " + error + "Body: " + body)};
 		});
-		request({url: myUrlTrain}, function (error, response, body) {
-			console.log("CTA request fired train."); // for debugging
-			// Following line for building, delete when able to get DOM to show
-			// self.sendSocketNotification("MMM-CTA-DATA", "TESTING");
-			// Delete above when solved
-			if (!error && response.statusCode == 200) {
-				bodyJs.train = JSON.parse(body);
-				// console.log(bodyJs); // For testing purposes;
-			self.sendSocketNotification("MMM-CTA-DATA", bodyJs)};	
-			});
 		// console.log(payload.updateInterval); Testing to see update interval
 		// handled by scheduleUpdate function setInterval(function() { self.getData(payload); }, payload.updateInterval);
 	}

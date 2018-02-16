@@ -44,8 +44,6 @@ Module.register("MMM-CTA", {
 		};
 		this.loaded = false;
 		this.scheduleUpdate(this.config.initialLoadDelay);
-		this.updateTimer = null;
-		this.apiRequest(this);
 	},
 
 	apiRequest: function(self) {
@@ -63,7 +61,7 @@ Module.register("MMM-CTA", {
 			idTrain: self.config.trainStationID
 		};
 		// Log.log("Request: " + JSON.stringify(request));
-		self.sendSocketNotification("CTA-REQUEST", request)  // Socket notification processed in node_helper.js;
+		self.sendSocketNotification("CTA-REQUEST", request);  // Socket notification processed in node_helper.js;
 	},
 
 	// Probably should remove this, because I run an initialization with start module..
@@ -71,12 +69,12 @@ Module.register("MMM-CTA", {
 		if (notification === "DOM_OBJECTS_CREATED") {
 			Log.log(this.name + " received a sys notification: " + notification);
 			this.apiRequest(this);
-			console.log("Start CTA dom");
+			// console.log("Start CTA dom");
 		}
 	}, */
 
 	getDom: function() {
-		console.log("Updating CTA dom"); // testing, make sure updateDom is running
+		// console.log("Updating CTA dom"); // testing, make sure updateDom is running
 		var self = this;
 		// Create document container
 		wrapper = document.createElement("div");
@@ -84,7 +82,7 @@ Module.register("MMM-CTA", {
 		var table = document.createElement("table");
 
 		if (this.dataNotification) {
-			var headRow = document.createElement("tr");
+			/* var headRow = document.createElement("tr");
 			var headElement = document.createElement("td");
 			headElement.className = "medium";
 			headElement.colSpan = "3";
@@ -100,7 +98,7 @@ Module.register("MMM-CTA", {
 			iElement.className = "xsmall";
 			iElement.innerHTML = "No Incidents Reported";
 			iRow.appendChild(iElement);
-			table.appendChild(iRow);
+			table.appendChild(iRow); */
 			
 			// Stop name header... create loop with bus row following later...
 			// Check if bus is not null, if has data, run update:
@@ -190,17 +188,21 @@ Module.register("MMM-CTA", {
 					arriveRow.appendChild(arriveElement);
 					var rtArriveElement = document.createElement("td");
 					rtArriveElement.align = "left";
-					rtArriveElement.innerHTML = "<i class="fa fa-subway" style="color:blue"></i>";
+					rtArriveElement.innerHTML = "<i class='fa fa-subway' style='color:blue'></i>";
 					arriveRow.appendChild(rtArriveElement);
 					var arrivalArriveElement = document.createElement("td");
 					arrivalArriveElement.align = "right";
-					arrivalArriveElement.innerHTML = duration.asMinutes(moment.duration((this.dataNotification.train["ctatt"].eta[i].arrT).diff((this.dataNotification.train["ctatt"].eta[i].prdt)))) + " min";
+					var arrivalT = moment(this.dataNotification.train["ctatt"].eta[i].arrT);
+					var now = moment();
+					var duration = moment.duration(arrivalT.diff(now));
+					var arrivalTime = Math.round(duration.asMinutes());
+					arrivalArriveElement.innerHTML = arrivalTime + " min";
 					arriveRow.appendChild(arrivalArriveElement);
 					// Append busArrivalRow into table!
 					table.appendChild(arriveRow);
 				}
 			}
-		}
+		};
 		wrapper.appendChild(table);
 		return wrapper;
 	},
@@ -213,10 +215,8 @@ Module.register("MMM-CTA", {
         	var nextLoad = this.config.updateTime;
         	if (typeof delay !== "undefined" && delay >= 0) {
             		nextLoad = delay;
-       		}
-
+       		};
         	var self = this;
-        	clearTimeout(this.updateTimer);
         	this.updateTimer = setTimeout(function() {
 			self.apiRequest(self);
 		}, nextLoad);
@@ -225,12 +225,10 @@ Module.register("MMM-CTA", {
 	socketNotificationReceived: function (notification, payload) {
 		if (notification === "MMM-CTA-DATA") {
 			// send payload (aka bus data to new var = dataNotification)
-			console.log("Payload received"); // debugging			
+			// console.log("Payload received");			
 			this.dataNotification = payload;
 			this.updateDom();
 			this.scheduleUpdate(this.config.updateTime);
 		}
 	},
-
-
 });
