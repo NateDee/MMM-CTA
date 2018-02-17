@@ -11,16 +11,6 @@ module.exports = NodeHelper.create({
 
 	socketNotificationReceived: function(notification, payload) { // Payload is 'request' from MMM-CTA
 		var self = this;
-		/* if (notification === 'CTA-REQUEST' && self.started == false) {
-			// console.log("Running CTA-REQUEST"); for debugging			
-			self.sendSocketNotification("STARTED", true);
-			self.config = payload;
-			self.getData(payload);
-			self.started = true;
-			} else if (notification === 'CTA-REQUEST' && self.started == true) {
-				self.config = payload;
-			self.getData(payload)
-			} */
 		if (notification === "CTA-REQUEST" ) {
 			// console.log("Running CTA-REQUEST"); // for debugging			
 			self.config = payload;
@@ -37,20 +27,18 @@ module.exports = NodeHelper.create({
 		// console.log("Getting data from CTA"); // for debugging
 		var myUrlBus = payload.urlBus + "?key=" + payload.key + "&stpid=" + payload.stpid + "&format=json";
 		var myUrlTrain = payload.urlTrain + "?key=" + payload.keyTrain + "&max=5" + "&mapid=" + payload.idTrain + "&outputType=json";
-		// console.log(myUrl); // for debugging
+		
+		// Had an issue with these requests firing and socket sending without Bus data, so nested train into bus run
+		//  The issue with this is, if bus gets an error I won't get any data at all, FIND A BETTER FIX
 		request({url: myUrlBus}, function (error, response, body) {
 			// console.log("CTA request fired."); // for debugging
-			// Following line for building, delete when able to get DOM to show
-			// self.sendSocketNotification("MMM-CTA-DATA", "TESTING");
-			// Delete above when solved
+			// If no error, store in bodyJs, then run train request
 			if (!error && response.statusCode == 200) {
 				bodyJs.bus = JSON.parse(body);
 				console.log(bodyJs.bus); // For testing purposes;
 				request({url: myUrlTrain}, function (error, response, body) {
 					console.log("CTA request fired train."); // for debugging
-					// Following line for building, delete when able to get DOM to show
-					// self.sendSocketNotification("MMM-CTA-DATA", "TESTING");
-					// Delete above when solved
+					// If no error, store in bodyJs
 						if (!error && response.statusCode == 200) {
 						bodyJs.train = JSON.parse(body);
 						console.log(bodyJs.train); // For testing purposes;
@@ -58,8 +46,6 @@ module.exports = NodeHelper.create({
 			});
 			}; // else {console.log("error getting data: " + error + "Body: " + body)};
 		});
-		// console.log(payload.updateInterval); Testing to see update interval
-		// handled by scheduleUpdate function setInterval(function() { self.getData(payload); }, payload.updateInterval);
 	}
 
 });
