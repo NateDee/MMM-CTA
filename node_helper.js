@@ -42,9 +42,19 @@ module.exports = NodeHelper.create({
 						if (!error && response.statusCode == 200) {
 						bodyJs.train = JSON.parse(body);
 						console.log(bodyJs.train); // For testing purposes;
-						self.sendSocketNotification("MMM-CTA-DATA", bodyJs)};	
+						self.sendSocketNotification("MMM-CTA-DATA", bodyJs)
+							};	
 			});
-			}; // else {console.log("error getting data: " + error + "Body: " + body)};
+			} else {
+				request({url: myUrlTrain}, function (error, response, body) {
+					console.log("CTA request fired train."); // for debugging
+					// If no error, store in bodyJs
+						if (!error && response.statusCode == 200) {
+						bodyJs.train = JSON.parse(body);
+						console.log(bodyJs.train); // For testing purposes;
+						self.sendSocketNotification("MMM-CTA-DATA", bodyJs)
+							};
+				};
 		});
 	}
 
