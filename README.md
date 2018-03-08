@@ -4,7 +4,7 @@
 
 This MagicMirror Module is designed to display incoming bus and train times for the CTA (Chicago Transit Authority).  The module will display up to the minute data for bus and train arrival times.
 
-##Get your CTA API keys!
+## Get your CTA API keys!
 
 You need to obtain API keys to access the live data to update your mirror:
 
@@ -27,8 +27,7 @@ git clone https://github.com/NateDee/MMM-CTA.git
 ```
 Configure the module in your config.js file.
 
-##
 
-##Using the module
+## Using the module
 
 To use this module, add it to the modules array
