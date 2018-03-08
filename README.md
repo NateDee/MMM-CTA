@@ -7,7 +7,9 @@ This MagicMirror Module is designed to display incoming bus and train times for 
 ##Get your CTA API keys!
 
 You need to obtain API keys to access the live data to update your mirror:
+
 Bus API:  http://www.transitchicago.com/developers/bustracker.aspx
+
 Train API:  http://www.transitchicago.com/developers/traintrackerapply.aspx
 
 The bus tracker API key can be obtained immediately, the train tracker key can take a few days to register.  Please reference this github since it's already approved maybe it will help speed things along for you.
