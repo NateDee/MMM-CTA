@@ -5,7 +5,6 @@ module.exports = NodeHelper.create({
 	// Process socket notification from MMM-CTA.js
 
 	start: function() {
-		// this.started = false;
 		this.config = null;
 	},
 
@@ -27,25 +26,28 @@ module.exports = NodeHelper.create({
 		// console.log("Getting data from CTA"); // for debugging
 		var myUrlBus = payload.urlBus + "?key=" + payload.key + "&stpid=" + payload.stpid + "&format=json";
 		var myUrlTrain = payload.urlTrain + "?key=" + payload.keyTrain + "&max=5" + "&mapid=" + payload.idTrain + "&outputType=json";
-		
-		// Had an issue with these requests firing and socket sending without Bus data, so nested train into bus run
-		//  The issue with this is, if bus gets an error I won't get any data at all, FIND A BETTER FIX
+		// console.log(myUrl); // for debugging
 		request({url: myUrlBus}, function (error, response, body) {
 			// console.log("CTA request fired."); // for debugging
-			// If no error, store in bodyJs, then run train request
+			// Following line for building, delete when able to get DOM to show
+			// self.sendSocketNotification("MMM-CTA-DATA", "TESTING");
+			// Delete above when solved
 			if (!error && response.statusCode == 200) {
 				bodyJs.bus = JSON.parse(body);
 				console.log(bodyJs.bus); // For testing purposes;
 				request({url: myUrlTrain}, function (error, response, body) {
 					console.log("CTA request fired train."); // for debugging
-					// If no error, store in bodyJs
+					// Following line for building, delete when able to get DOM to show
+					// self.sendSocketNotification("MMM-CTA-DATA", "TESTING");
+					// Delete above when solved
 						if (!error && response.statusCode == 200) {
 						bodyJs.train = JSON.parse(body);
 						console.log(bodyJs.train); // For testing purposes;
 						self.sendSocketNotification("MMM-CTA-DATA", bodyJs)
-							};	
-			});
+							}	
+					});
 			} else {
+				// If no data from bus or error from bus still run train!
 				request({url: myUrlTrain}, function (error, response, body) {
 					console.log("CTA request fired train."); // for debugging
 					// If no error, store in bodyJs
@@ -54,7 +56,8 @@ module.exports = NodeHelper.create({
 						console.log(bodyJs.train); // For testing purposes;
 						self.sendSocketNotification("MMM-CTA-DATA", bodyJs)
 							};
-				};
+					});
+				}
 		});
 	}
 

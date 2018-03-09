@@ -8,7 +8,7 @@ Module.register("MMM-CTA", {
 		ctaApiKey: null,
 		updateTime: 60000, // 1 minute
 		busUrl: 'www.ctabustracker.com/bustime/api/v2/getpredictions', // deleted http:
-		initialLoadDelay: 0, // start delay seconds.
+		// initialLoadDelay: 0, // This is obsolete, loaded first call by start()
 		trainUrl: 'http://lapi.transitchicago.com/api/1.0/ttarrivals.aspx',
 		ctaApiKeyTrain: null,
 		trainStationID: null,
@@ -43,6 +43,8 @@ Module.register("MMM-CTA", {
 			this.updateTime = 60000 // Every 15 sec (overkill as they don't update API that often);
 		};
 		this.loaded = false;
+		// Initial run to start;
+		this.apiRequest(this);
 		this.scheduleUpdate(this.config.initialLoadDelay);
 	},
 
@@ -60,18 +62,8 @@ Module.register("MMM-CTA", {
 			keyTrain: self.config.ctaApiKeyTrain,
 			idTrain: self.config.trainStationID
 		};
-		// Log.log("Request: " + JSON.stringify(request));
 		self.sendSocketNotification("CTA-REQUEST", request);  // Socket notification processed in node_helper.js;
 	},
-
-	// Probably should remove this, because I run an initialization with start module..
-	/* notificationReceived: function(notification, payload, sender) {
-		if (notification === "DOM_OBJECTS_CREATED") {
-			Log.log(this.name + " received a sys notification: " + notification);
-			this.apiRequest(this);
-			// console.log("Start CTA dom");
-		}
-	}, */
 
 	getDom: function() {
 		// console.log("Updating CTA dom"); // testing, make sure updateDom is running
@@ -82,23 +74,6 @@ Module.register("MMM-CTA", {
 		var table = document.createElement("table");
 
 		if (this.dataNotification) {
-			/* var headRow = document.createElement("tr");
-			var headElement = document.createElement("td");
-			headElement.className = "medium";
-			headElement.colSpan = "3";
-			headElement.innerHTML = "Incidents";
-			headRow.appendChild(headElement);
-			table.appendChild(headRow);
-			
-			// Nest this to an if statements with incidents, for now just testing output
-			var iRow = document.createElement("tr");
-			var iElement = document.createElement("td");
-			iElement.align = "small";
-			iElement.colSpan = "3";
-			iElement.className = "xsmall";
-			iElement.innerHTML = "No Incidents Reported";
-			iRow.appendChild(iElement);
-			table.appendChild(iRow); */
 			
 			// Stop name header... create loop with bus row following later...
 			// Check if bus is not null, if has data, run update:
@@ -107,14 +82,14 @@ Module.register("MMM-CTA", {
 				var stopRowElement = document.createElement("td");
 				stopRowElement.align ="middle";
 				stopRowElement.colSpan = "3";
-				stopRowElement.className = "medium";
+				stopRowElement.className = "small";
 				stopRowElement.innerHTML = this.config.busStopName;
 				stopRow.appendChild(stopRowElement);
 				table.appendChild(stopRow);
 
 				// Do the bus title row
 				var busRow = document.createElement("tr");
-				busRow.className = "small";
+				busRow.className = "xsmall";
 				busRow.align = "left";
 				var dirElement = document.createElement("td");
 				dirElement.innerHTML = "Direction";// dataNotification["bustime-response"].prd[0].rtdir;
@@ -133,7 +108,7 @@ Module.register("MMM-CTA", {
 				// Do the bus content row with a loop
 				for (i = 0, len = this.dataNotification.bus["bustime-response"].prd.length; i < len; i++) {
 					var arriveRow = document.createElement("tr");
-					arriveRow.className = "small";
+					arriveRow.className = "xsmall";
 					arriveRow.align = "left";
 					var arriveElement = document.createElement("td");
 					arriveElement.innerHTML = this.dataNotification.bus["bustime-response"].prd[i].rtdir;
@@ -155,17 +130,17 @@ Module.register("MMM-CTA", {
 				var stopRowElement = document.createElement("td");
 				stopRowElement.align ="middle";
 				stopRowElement.colSpan = "3";
-				stopRowElement.className = "medium";
+				stopRowElement.className = "small";
 				stopRowElement.innerHTML = this.config.trainStopName;
 				stopRow.appendChild(stopRowElement);
 				table.appendChild(stopRow);
 
 				// Do the bus title row
 				var busRow = document.createElement("tr");
-				busRow.className = "small";
+				busRow.className = "xsmall";
 				busRow.align = "left";
 				var dirElement = document.createElement("td");
-				dirElement.innerHTML = "Direction";// dataNotification["ctatt"].prd[0].rtdir;
+				dirElement.innerHTML = "Direction"; // dataNotification["ctatt"].prd[0].rtdir;
 				busRow.appendChild(dirElement);
 				var rtElement = document.createElement("td");
 				rtElement.align = "left";
@@ -178,10 +153,10 @@ Module.register("MMM-CTA", {
 				// Append busRow into table!
 				table.appendChild(busRow);
 			
-				// Do the bus content row with a loop
+				// Do the train content row with a loop
 				for (i = 0, len = this.dataNotification.train["ctatt"].eta.length; i < len; i++) {
 					var arriveRow = document.createElement("tr");
-					arriveRow.className = "small";
+					arriveRow.className = "xsmall";
 					arriveRow.align = "left";
 					var arriveElement = document.createElement("td");
 					arriveElement.innerHTML = this.dataNotification.train["ctatt"].eta[i].destNm;
@@ -209,26 +184,23 @@ Module.register("MMM-CTA", {
 
     	/* scheduleUpdate()
      	* Schedule next update.
-     	* argument delay number - Milliseconds before next update. If empty, this.config.updateInterval is used.
+     	* this.config.updateInterval is used.
      	* see:  https://github.com/nwootton/MMM-UKLiveBusStopInfo */
     	scheduleUpdate: function(delay) {
         	var nextLoad = this.config.updateTime;
-        	if (typeof delay !== "undefined" && delay >= 0) {
-            		nextLoad = delay;
-       		};
         	var self = this;
-        	this.updateTimer = setTimeout(function() {
+        	this.updateTimer = setInterval(function() {
 			self.apiRequest(self);
 		}, nextLoad);
     },
 
 	socketNotificationReceived: function (notification, payload) {
 		if (notification === "MMM-CTA-DATA") {
-			// send payload (aka bus data to new var = dataNotification)
+			// send payload (aka bus/train data to new var = dataNotification)
 			// console.log("Payload received");			
 			this.dataNotification = payload;
 			this.updateDom();
-			this.scheduleUpdate(this.config.updateTime);
+			// this.scheduleUpdate(this.config.updateTime); NO LONGER NEED SINCE USING setInterval()
 		}
 	},
 });
