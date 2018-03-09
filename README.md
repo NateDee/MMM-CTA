@@ -39,14 +39,14 @@ modules: [
 	position: 'bottom_left',
 	config: {
 		busStopName: '',  // String value, Name your bus stop
-		stationId: 	41410, //Train station ID:  Chicago Blue line example; http://www.transitchicago.com/developers/ttdocs/default.aspx#_Toc296199909
+		stationId: 41410, //Train station ID:  Chicago Blue line example; http://www.transitchicago.com/developers/ttdocs/default.aspx#_Toc296199909
 		stopId: 561, // Bus station ID: Chicago and Milwaukee example; go to http://www.transitchicago.com/riding_cta/systemguide/default.aspx to find your stop ID
 		maxResult: 4,  // The maximum number of incomings you want to display for bus stops
 		ctaApiKey: 'you-bus-APIkey',
 		updateTime: 60000, // 1 minute, the API does not update much more often so going below this is unnecessary
 		ctaApiKeyTrain: 'your-train-APIkey',
 		trainStopName: '',  //String value, name your train stop
-		trainStationID:41410, //Train station ID:  Chicago Blue line example; http://www.transitchicago.com/developers/ttdocs/default.aspx#_Toc296199909
+		trainStationID: 41410, //Train station ID:  Chicago Blue line example; http://www.transitchicago.com/developers/ttdocs/default.aspx#_Toc296199909
 	},
      }
 ]
