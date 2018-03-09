@@ -51,3 +51,17 @@ modules: [
 ]
 ```
 
+## Configuration Options
+
+Option|Description
+------|-----------
+`updateTime`|How often the requests should update; 60 * 1000 = 1 minute.<br/>**Expected Value type:** `int`
+`ctaApiKey`|Your CTA Bus API key.<br/>**Expected Value type:** `string`
+`busStopName`|Name you would like to give your bus stop.<br/>**Expected Value type:** `string`
+`stopId`|The number of your stopID, find a stop ID:<br/>http://www.transitchicago.com/riding_cta/systemguide/default.aspx<br/>**Expected Value type:** `int`
+`maxResult`|The maximum number of bus results your station should display.<br/>**Expected Value type:** `int`
+`ctaApiKeyTrain`|Your CTA Traing API key.<br/>**Expected Value type:** `string`
+`trainStopName`|Name you would like to give your train stop.<br/>**Expected Value type:** `string`
+`trainStationID`|Number of L station, find a station:<br/>http://www.transitchicago.com/developers/ttdocs/default.aspx#_Toc296199909<br/>**Expected Value type:** `int`
+
+
