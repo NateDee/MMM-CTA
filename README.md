@@ -48,6 +48,7 @@ modules: [
           trainStopName: '',  //String value, name your train stop
 		      trainStationID:41410, //Train station ID:  Chicago Blue line example; http://www.transitchicago.com/developers/ttdocs/default.aspx#_Toc296199909
 	  },
+    }
   ]
   '''
 
