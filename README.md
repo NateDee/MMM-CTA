@@ -32,7 +32,7 @@ Configure the module in your config.js file.
 
 To use this module, add it to the modules array in your config.js file.
 
-'''js
+```js
 modules: [
     {
       module: 'MMM-CTA',
@@ -50,5 +50,5 @@ modules: [
 	  },
     }
   ]
-  '''
+```
 
