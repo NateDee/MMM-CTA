@@ -11,3 +11,5 @@ Changelog for changes made and things to do
 -To do: After fixes, proof for other things need to change; if nothing else to change release to community
 
 -To do: Add multi-instance option:  Can be done by setting an instance variable in config, and then using socketNotification with instance ID
+
+-To do: Fix max result of bus and train
