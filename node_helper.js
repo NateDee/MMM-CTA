@@ -44,7 +44,9 @@ module.exports = NodeHelper.create({
 						bodyJs.train = JSON.parse(body);
 						console.log(bodyJs.train); // For testing purposes;
 						self.sendSocketNotification("MMM-CTA-DATA", bodyJs)
-							}	
+						} else { // Still send bus data if train fails...
+							self.sendSocketNotification("MMM-CTA-DATA", bodyJs)
+						}
 					});
 			} else {
 				// If no data from bus or error from bus still run train!
