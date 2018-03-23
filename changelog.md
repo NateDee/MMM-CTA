@@ -1,7 +1,11 @@
 Changelog for changes made and things to do
 
 #Version 0.0.1
+
 -To do: fix node helper nested request strips, add case for if train gets error after bus
+
 -To do: Create conditionals for requests, based on if API keys are set for bus only, train only, or bus and train
+
 -To do: Create full readme file that matches MMM specifications
+
 -To do: After fixes, proof for other things need to change; if nothing else to change release to community
