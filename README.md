@@ -42,10 +42,12 @@ modules: [
 		ctaApiKey: 'you-bus-APIkey',
 		busStopName: '',  // String value, Name your bus stop
 		stopId: 561, // Bus station ID: Chicago and Milwaukee example; go to http://www.transitchicago.com/riding_cta/systemguide/default.aspx to find your stop ID
-		maxResult: 4,  // The maximum number of incomings you want to display for bus stops
+		maxResult: 4,  // The maximum number of incoming bussesy you want to display for bus stops
 		ctaApiKeyTrain: 'your-train-APIkey',
 		trainStopName: '',  //String value, name your train stop
 		trainStationID: 41410, //Train station ID:  Chicago Blue line example; http://www.transitchicago.com/developers/ttdocs/default.aspx#_Toc296199909
+		maxResultTrain: 5, // Max number of incoming trains to disply
+		moduleInstance: 1, // To run multiple instances of this module
 	},
      }
 ]
@@ -63,6 +65,9 @@ Option|Description
 `ctaApiKeyTrain`|Your CTA Traing API key.<br/>**Expected Value type:** `string`
 `trainStopName`|Name you would like to give your train stop.<br/>**Expected Value type:** `string`
 `trainStationID`|Number of L station, find a station:<br/>http://www.transitchicago.com/developers/ttdocs/default.aspx#_Toc296199909<br/>**Expected Value type:** `int`
+`maxResultTrain`|The maximum number of train results to display.<br/>**Expected Value type:** `int`
+`moduleInstance`|If running multiple instances, add a new instance to your config.js and increment by 1 for each instance.<br/>**Expected Value type:** `int`
+
 
 ## FAQ
 - I can't find my bus stop ID
