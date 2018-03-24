@@ -66,7 +66,7 @@ Option|Description
 `trainStopName`|Name you would like to give your train stop.<br/>**Expected Value type:** `string`
 `trainStationID`|Number of L station, find a station:<br/>http://www.transitchicago.com/developers/ttdocs/default.aspx#_Toc296199909<br/>**Expected Value type:** `int`
 `maxResultTrain`|The maximum number of train results to display.<br/>**Expected Value type:** `int`
-`moduleInstance`|If running multiple instances, add a new instance to your config.js and increment by 1 for each instance.<br/>**Expected Value type:** `int`
+`moduleInstance`|If running multiple instances, add a new instance to your config.js and increment this value by 1 for each additional instance.<br/>**Expected Value type:** `int`
 
 
 ## FAQ
