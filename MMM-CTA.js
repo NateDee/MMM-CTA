@@ -1,9 +1,10 @@
 Module.register("MMM-CTA", {
 	defaults: { // Start with the information needed for a single stop
 		busStopName: null,
-		stationId: null,
+		//stationId: null,
 		stopId: null,
 		maxResult: null,
+		maxResultTrain: null,
 		routeCode: null,
 		ctaApiKey: null,
 		updateTime: 60000, // 1 minute
@@ -13,6 +14,7 @@ Module.register("MMM-CTA", {
 		ctaApiKeyTrain: null,
 		trainStationID: null,
 		trainStopName: null,
+		moduleInstance: null,
 	},
 
 	// requireVersion: 
@@ -43,24 +45,34 @@ Module.register("MMM-CTA", {
 			this.updateTime = 60000 // Every 15 sec (overkill as they don't update API that often);
 		};
 		this.loaded = false;
+		this.instanceData = "MMM-CTA-DATA" + this.config.moduleInstance;
+		// this.instanceReq = "CTA-REQUEST" + this.config.moduleInstance;
 		// Initial run to start;
-		this.apiRequest(this);
-		this.scheduleUpdate(this.config.initialLoadDelay);
+		if (this.config.moduleInstance === 1) {
+			this.apiRequest(this);
+			this.scheduleUpdate();
+		} else if (this.config.moduleInstance > 1) {
+			setTimeout(this.apiRequest, 4000 * this.config.moduleInstance, this);
+			setTimeout(this.scheduleUpdate, 4000 * this.config.moduleInstance);
+		};
+	
 	},
 
 	apiRequest: function(self) {
 		// Variables needed for API request, see CTA devel documentation
 		var request = {
-			mapid: self.config.stationId,
+			//mapid: self.config.stationId,
 			stpid: self.config.stopId,
 			maxRes: self.config.maxResult,
+			maxResTrain: self.config.maxResultTrain,
 			rt: self.config.routeCode,
 			key: self.config.ctaApiKey,
 			urlBus: self.config.busUrl,
 			updateInterval: self.config.updateTime,
 			urlTrain: self.config.trainUrl,
 			keyTrain: self.config.ctaApiKeyTrain,
-			idTrain: self.config.trainStationID
+			idTrain: self.config.trainStationID,
+			modInstance: self.config.moduleInstance
 		};
 		self.sendSocketNotification("CTA-REQUEST", request);  // Socket notification processed in node_helper.js;
 	},
@@ -163,7 +175,7 @@ Module.register("MMM-CTA", {
 					arriveRow.appendChild(arriveElement);
 					var rtArriveElement = document.createElement("td");
 					rtArriveElement.align = "left";
-					rtArriveElement.innerHTML = "<i class='fa fa-subway' style='color:blue'></i>";
+					rtArriveElement.innerHTML = "<i class='fa fa-subway' style='color:blue'></i>"; // Add options for other train colors
 					arriveRow.appendChild(rtArriveElement);
 					var arrivalArriveElement = document.createElement("td");
 					arrivalArriveElement.align = "right";
@@ -186,7 +198,7 @@ Module.register("MMM-CTA", {
      	* Schedule next update.
      	* this.config.updateInterval is used.
      	* see:  https://github.com/nwootton/MMM-UKLiveBusStopInfo */
-    	scheduleUpdate: function(delay) {
+    	scheduleUpdate: function() {
         	var nextLoad = this.config.updateTime;
         	var self = this;
         	this.updateTimer = setInterval(function() {
@@ -195,9 +207,9 @@ Module.register("MMM-CTA", {
     },
 
 	socketNotificationReceived: function (notification, payload) {
-		if (notification === "MMM-CTA-DATA") {
+		if (notification === this.instanceData) {
 			// send payload (aka bus/train data to new var = dataNotification)
-			// console.log("Payload received");			
+			console.log("Payload received");			
 			this.dataNotification = payload;
 			this.updateDom();
 			// this.scheduleUpdate(this.config.updateTime); NO LONGER NEED SINCE USING setInterval()
