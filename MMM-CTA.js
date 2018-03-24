@@ -1,7 +1,7 @@
 Module.register("MMM-CTA", {
 	defaults: { // Start with the information needed for a single stop
 		busStopName: null,
-		//stationId: null,
+		// stationId: null,
 		stopId: null,
 		maxResult: null,
 		maxResultTrain: null,
@@ -61,7 +61,7 @@ Module.register("MMM-CTA", {
 	apiRequest: function(self) {
 		// Variables needed for API request, see CTA devel documentation
 		var request = {
-			//mapid: self.config.stationId,
+			// mapid: self.config.stationId,
 			stpid: self.config.stopId,
 			maxRes: self.config.maxResult,
 			maxResTrain: self.config.maxResultTrain,
