@@ -1,6 +1,6 @@
 Changelog for changes made and things to do
 
-#Version 0.0.1
+# Version 0.0.1
 
 -To do: fix node helper nested request strips, add case for if train gets error after bus
 
@@ -13,3 +13,7 @@ Changelog for changes made and things to do
 -To do: Add multi-instance option:  Can be done by setting an instance variable in config, and then using socketNotification with instance ID
 
 -To do: Fix max result of bus and train
+
+# Version 0.0.2
+
+- Addressed all issues under version 0.0.1 and issue #1
