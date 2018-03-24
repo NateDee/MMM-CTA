@@ -8,13 +8,13 @@ Module.register("MMM-CTA", {
 		routeCode: null,
 		ctaApiKey: null,
 		updateTime: 60000, // 1 minute
-		busUrl: 'www.ctabustracker.com/bustime/api/v2/getpredictions', // deleted http:
+		busUrl: 'http://www.ctabustracker.com/bustime/api/v2/getpredictions', // deleted http:
 		// initialLoadDelay: 0, // This is obsolete, loaded first call by start()
 		trainUrl: 'http://lapi.transitchicago.com/api/1.0/ttarrivals.aspx',
 		ctaApiKeyTrain: null,
 		trainStationID: null,
 		trainStopName: null,
-		moduleInstance: null,
+		moduleInstance: 1,
 	},
 
 	// requireVersion: 
