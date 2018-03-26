@@ -17,3 +17,5 @@ Changelog for changes made and things to do
 # Version 0.0.2
 
 - Addressed all issues under version 0.0.1 and issue #1
+
+-To do:  Add bus coloring options based on 'L' train color
