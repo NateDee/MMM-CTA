@@ -15,6 +15,7 @@ Module.register("MMM-CTA", {
 		trainStationID: null,
 		trainStopName: null,
 		moduleInstance: 1,
+		trainIconColor: 'auto'
 	},
 
 	// requireVersion: 
@@ -167,6 +168,38 @@ Module.register("MMM-CTA", {
 			
 				// Do the train content row with a loop
 				for (i = 0, len = this.dataNotification.train["ctatt"].eta.length; i < len; i++) {
+					let sTrainIconColor = "inherit";
+					if (this.config.trainIconColor.toLowerCase() != "auto") {
+						sTrainIconColor = this.config.trainIconColor;
+					} else {
+						sTrainIconColor = this.dataNotification.train["ctatt"].eta[i].rt.toUpperCase();
+						switch(sTrainIconColor) {
+							case "P":
+								sTrainIconColor = "PURPLE";
+								break;
+							case "BRN":
+								sTrainIconColor = "BROWN";
+								break;
+							case "RED":
+								sTrainIconColor = "RED";
+								break;
+							case "ORG":
+								sTrainIconColor = "ORANGE";
+								break;
+							case "BL":
+								sTrainIconColor = "BLUE";
+								break;
+							case "G":
+								sTrainIconColor = "GREEN";
+								break;
+							case "Y":
+								sTrainIconColor = "YELLOW";
+								break;
+							case default:
+								break;
+						}
+					}
+					
 					var arriveRow = document.createElement("tr");
 					arriveRow.className = "xsmall";
 					arriveRow.align = "left";
@@ -175,7 +208,9 @@ Module.register("MMM-CTA", {
 					arriveRow.appendChild(arriveElement);
 					var rtArriveElement = document.createElement("td");
 					rtArriveElement.align = "left";
-					rtArriveElement.innerHTML = "<i class='fa fa-subway' style='color:blue'></i>"; // Add options for other train colors
+					//rtArriveElement.innerHTML = "<i class='fa fa-subway' style='color:blue'></i>"; // Add options for other train colors
+					//use train color option - "inherit" will use default text color
+					rtArriveElement.innerHTML = "<i class='fa fa-subway' style='color:" + sTrainIconColor + "'></i>";
 					arriveRow.appendChild(rtArriveElement);
 					var arrivalArriveElement = document.createElement("td");
 					arrivalArriveElement.align = "right";
