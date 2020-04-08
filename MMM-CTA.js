@@ -116,24 +116,37 @@ Module.register("MMM-CTA", {
 				busRow.appendChild(arrivalElement);
 				// Append busRow into table!
 				table.appendChild(busRow);
-			
-				// Do the bus content row with a loop
-				for (i = 0, len = this.dataNotification.bus["bustime-response"].prd.length; i < len; i++) {
-					var arriveRow = document.createElement("tr");
+				
+				// Check to see if there are any scheduled routes for the given bus stop
+				if (!(this.dataNotification.bus['bustime-response'].error)){
+					// Do the bus content row with a loop
+					for (i = 0, len = this.dataNotification.bus["bustime-response"].prd.length; i < len; i++) {
+						var arriveRow = document.createElement("tr");
+						arriveRow.className = "xsmall";
+						arriveRow.align = "left";
+						var arriveElement = document.createElement("td");
+						arriveElement.innerHTML = this.dataNotification.bus["bustime-response"].prd[i].rtdir;
+						arriveRow.appendChild(arriveElement);
+						var rtArriveElement = document.createElement("td");
+						rtArriveElement.align = "left";
+						rtArriveElement.innerHTML = this.dataNotification.bus["bustime-response"].prd[i].rt + " " + "<i class='fa fa-bus' aria-hidden='true'></i>";
+						arriveRow.appendChild(rtArriveElement);
+						var arrivalArriveElement = document.createElement("td");
+						arrivalArriveElement.align = "right";
+						arrivalArriveElement.innerHTML = this.dataNotification.bus["bustime-response"].prd[i].prdctdn + " min";
+						arriveRow.appendChild(arrivalArriveElement);
+						// Append busArrivalRow into table!
+						table.appendChild(arriveRow);
+					}
+				}
+				else {
+					// If no buses are scheduled, handle error message.
+					var arriveRow =document.createElement("tr");
 					arriveRow.className = "xsmall";
-					arriveRow.align = "left";
+					arriveRow.align = "right";
 					var arriveElement = document.createElement("td");
-					arriveElement.innerHTML = this.dataNotification.bus["bustime-response"].prd[i].rtdir;
+					arriveElement.innerHTML = "<p style='font-weight:bold; color:maroon;'>No buses are currently scheduled for this stop.</p>";
 					arriveRow.appendChild(arriveElement);
-					var rtArriveElement = document.createElement("td");
-					rtArriveElement.align = "left";
-					rtArriveElement.innerHTML = this.dataNotification.bus["bustime-response"].prd[i].rt + " " + "<i class='fa fa-bus' aria-hidden='true'></i>";
-					arriveRow.appendChild(rtArriveElement);
-					var arrivalArriveElement = document.createElement("td");
-					arrivalArriveElement.align = "right";
-					arrivalArriveElement.innerHTML = this.dataNotification.bus["bustime-response"].prd[i].prdctdn + " min";
-					arriveRow.appendChild(arrivalArriveElement);
-					// Append busArrivalRow into table!
 					table.appendChild(arriveRow);
 				}
 			};
